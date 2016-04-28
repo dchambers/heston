@@ -6,8 +6,8 @@ import hestonBot from './hestonBot';
 chai.use(chaiAsPromised);
 
 const user = {id: 1, name: 'Fred'};
-const getTripAdvisorPage = restaurant => Promise.resolve('@' + restaurant);
-const data = {user, getTripAdvisorPage};
+const getPlaceInfo = restaurant => Promise.resolve({tripAdvisorLink: '@' + restaurant});
+const data = {user, getPlaceInfo};
 
 describe('conversation with Heston', () => {
 	it('ignores conversations unless they start as expected', () => {

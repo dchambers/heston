@@ -16,7 +16,10 @@ const hestonBot = (state = {users: {}, reviews: []}, message, data) => {
 		const updatedState = assocPath(['users', data.user.id], userState, state);
 
 		return action(updatedState, [
-			userMessage(data.user.name, data.getTripAdvisorPage(restaurant)),
+			userMessage(data.user.name, data.getPlaceInfo(restaurant).then(placeInfo => {
+				void (data.placeInfo = placeInfo);
+				return placeInfo.tripAdvisorLink;
+			})),
 			userMessage(data.user.name, 'Is this the restaurant you want to review?')
 		]);
 	}

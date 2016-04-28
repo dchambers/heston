@@ -2,7 +2,7 @@ import SlackBot from 'slackbots';
 import storage from 'node-persist';
 import companyData from './companyData';
 import hestonBot from './src/hestonBot';
-import {getTripAdvisorPage} from './src/utils';
+import {getPlaceInfo} from './src/utils';
 
 // create a bot
 var bot = new SlackBot(companyData);
@@ -21,7 +21,7 @@ bot.on('start', function() {
 	bot.on('message', function(data) {
 		if(data.type == 'message' && data.text && data.bot_id === undefined) {
 			const user = bot.users.filter((user) => user.id === data.user)[0];
-      const botData = {user, getTripAdvisorPage};
+      const botData = {user, getPlaceInfo};
 			const result = hestonBot(storage.getItem('state'), data.text, botData);
       storage.setItem('state', result.state);
 
