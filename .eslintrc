@@ -1,0 +1,15 @@
+{
+  "extends": "eslint:recommended",
+  "env": {
+    "es6": true
+  },
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true
+    }
+  },
+  "plugins": [
+    "no-implicit-side-effects"
+  ]
+}
