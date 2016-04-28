@@ -10,7 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "htmlparser2": "^3.9.0",
     "node-fetch": "^1.5.1",
     "node-persist": "0.0.11",
     "ramda": "^0.21.0",
