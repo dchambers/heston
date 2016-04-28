@@ -2,7 +2,7 @@ import SlackBot from 'slackbots';
 import storage from 'node-persist';
 import companyData from './companyData';
 import hestonBot from './src/hestonBot';
-import getTripAdvisorPage from './src/getTripAdvisorPage';
+import {getTripAdvisorPage} from './src/utils';
 
 // create a bot
 var bot = new SlackBot(companyData);
