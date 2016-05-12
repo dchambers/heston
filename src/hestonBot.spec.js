@@ -2,12 +2,15 @@ import {describe, it, before} from 'mocha';
 import chai, {expect} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import hestonBot from './hestonBot';
+import {DEFAULT_LOCATION} from './sentenceParser';
 
 chai.use(chaiAsPromised);
 
 const user = {id: 1, name: 'Fred'};
+// TODO: we need tests around broken promises (i.e. promises that error)
 const getPlaceInfo = restaurant => Promise.resolve({tripAdvisorLink: '@' + restaurant});
-const data = () => ({user, getPlaceInfo});
+const getTravelDuration = (restaurant) => Promise.resolve((restaurant == DEFAULT_LOCATION) ? 5 : 100);
+const data = () => ({user, getPlaceInfo, getTravelDuration});
 
 describe('conversation with Heston', () => {
 	it('ignores conversations unless they start as expected', () => {
@@ -75,6 +78,43 @@ describe('conversation with Heston', () => {
 							placeInfo: {
 								tripAdvisorLink: '@Krusty Burger'
 							}
+						});
+
+						describe('conversation now that there are reviews available', () => {
+							let recommendationResult;
+
+							before(() => {
+								recommendationResult = hestonBot(describedResult.state, 'Good restaurant recommendations please?', data());
+							});
+
+							it('mentions previously recommended restaurants in the vicinity when asked for a recommendation', () => {
+								expect(recommendationResult.messages.length).to.equal(1);
+								return expect(recommendationResult.messages[0].message).to.eventually.equal(
+									'I have 1 recommendation(s) for restaurants near ' + DEFAULT_LOCATION + ' from other Sapient staff if you\'re interested?\n' +
+									'Type \'show me\' to see them.');
+							});
+
+							it('does not recommend restaurants that are not in the vicinity', () => {
+								const remoteRecommendationResult = hestonBot(describedResult.state, 'Good restaurant recommendations near New York?', data());
+
+								expect(remoteRecommendationResult.messages.length).to.equal(1);
+								return expect(remoteRecommendationResult.messages[0].message).to.eventually.equal(
+									'Sorry, I\'ve got nothing for you. People near New York have yet to share any restaurant recommendations with me.');
+							});
+
+							describe('conversation when restaurant recommendations are solicited', () => {
+								let solicitedRecommendationResult;
+
+								before(() => {
+									solicitedRecommendationResult = hestonBot(describedResult.state, 'show me', data());
+								});
+
+								it.skip('displays all of the recommended restaurants in the area', () => {
+									expect(solicitedRecommendationResult.messages.length).to.equal(1);
+									return expect(solicitedRecommendationResult.messages[0].message).to.eventually.equal(
+										'XXX');
+								});
+							});
 						});
 					});
 

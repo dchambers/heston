@@ -1,7 +1,7 @@
 /* eslint "no-implicit-side-effects/no-implicit-side-effects": "error" */
 import {assoc, assocPath, dissoc} from 'ramda';
+import filter from 'array-promise-filter';
 import {sentenceParser, FOOT} from './sentenceParser';
-import {getTravelDuration} from './utils';
 import companyData from '../companyData';
 
 const AWAITING_RESTAURANT_CONFIRMATION = 1;
@@ -13,10 +13,11 @@ const userMessage = (user, message) => ({type:'USER', user, message});
 
 const removeStateProp = dissoc('state');
 
-const createReviewFilter = (filter) => (restaurant) => {
-	const travelDuration = getTravelDuration(filter.near, restaurant.location, (filter.by == FOOT) ? 'walking' : 'driving');
-	const priceMatch = true; // TODO: we need to add pricing information to the restaurant data blob
-	return (travelDuration < (filter.by == FOOT) ? 10 : 30) && priceMatch;
+const createReviewFilter = (filter, getTravelDuration) => (restaurant) => {
+	return getTravelDuration(filter.near, restaurant.location, (filter.by == FOOT) ? 'walking' : 'driving').then((travelDuration) => {
+		const priceMatch = true; // TODO: we need to add pricing information to the restaurant data blob
+		return (travelDuration < ((filter.by == FOOT) ? 10 : 30)) && priceMatch;
+	});
 };
 
 const hestonBot = (state = {users: {}, reviews: []}, message, data) => {
@@ -24,12 +25,13 @@ const hestonBot = (state = {users: {}, reviews: []}, message, data) => {
 		const restaurant = message.replace(/^heston review /, '');
 		const userState = {state: AWAITING_RESTAURANT_CONFIRMATION, restaurant};
 		const updatedState = assocPath(['users', data.user.id], userState, state);
+		const asyncMessage = data.getPlaceInfo(restaurant).then(placeInfo => {
+			void (updatedState.users[data.user.id].placeInfo = placeInfo);
+			return placeInfo.tripAdvisorLink;
+		});
 
 		return action(updatedState, [
-			userMessage(data.user.name, data.getPlaceInfo(restaurant).then(placeInfo => {
-				void (updatedState.users[data.user.id].placeInfo = placeInfo);
-				return placeInfo.tripAdvisorLink;
-			})),
+			userMessage(data.user.name, asyncMessage),
 			userMessage(data.user.name, 'Is this the restaurant you want to review?')
 		]);
 	}
@@ -37,11 +39,18 @@ const hestonBot = (state = {users: {}, reviews: []}, message, data) => {
 		const parsedSentence = sentenceParser(message);
 
 		if(parsedSentence) {
-			const reviewFilter = createReviewFilter(parsedSentence);
-			const qualifyingRestaurants = state.reviews.filter(reviewFilter);
+			const reviewFilter = createReviewFilter(parsedSentence, data.getTravelDuration);
+			const asyncMessage = filter(state.reviews, reviewFilter).then((qualifyingRestaurants) => {
+				if(qualifyingRestaurants.length === 0) {
+					return `Sorry, I've got nothing for you. People near ${parsedSentence.near} have yet to share any restaurant recommendations with me.`;
+				}
+				else {
+					return `I have ${qualifyingRestaurants.length} recommendation(s) for restaurants near ${parsedSentence.near} from other ${companyData.companyName} staff if you're interested?\nType 'show me' to see them.`;
+				}
+			})
 
 			return action(state, [
-				userMessage(data.user.name, `I have ${qualifyingRestaurants.length} recommendations for restaurants near ${reviewFilter.near} from other ${companyData.companyName} staff if you're interested?\nType 'ok @heston' to see them.`)
+				userMessage(data.user.name, asyncMessage)
 			]);
 		}
 	}
