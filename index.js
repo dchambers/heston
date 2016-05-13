@@ -8,40 +8,42 @@ import {getPlaceInfo, getTravelDuration} from './src/utils';
 var bot = new SlackBot(companyData);
 
 storage.initSync({
-  continuous: false,
-  interval: 500
+	continuous: false,
+	interval: 500
 });
 
 bot.on('start', function() {
-  const params = {
-    icon_emoji: ':cherries:',
-    unfurl_links: true
-  };
+	const botUser = bot.users.filter((user) => (user.name == 'heston'))[0];
+	const botId = `<@${botUser.id}>`;
+	const params = {
+		icon_emoji: ':cherries:',
+		unfurl_links: true
+	};
 
 	bot.on('message', function(data) {
 		if(data.type == 'message' && data.text && data.bot_id === undefined) {
 			const user = bot.users.filter((user) => user.id === data.user)[0];
-      const botData = {user, getPlaceInfo, getTravelDuration};
+			const botData = {user, botId, getPlaceInfo, getTravelDuration};
 			const result = hestonBot(storage.getItem('state'), data.text, botData);
-      storage.setItem('state', result.state);
+			storage.setItem('state', result.state);
 
-      const asyncMessages = result.messages.map(
-        (m) => (!m.message.then) ?
-          Promise.resolve(m) :
-          m.message.then(message => ({...m, message}))
-      );
-      Promise.all(asyncMessages).then((resolvedMessages) => {
-        for(const m of resolvedMessages) {
-          switch(m.type) {
-            case 'USER': {
-              bot.postMessageToUser(m.user, m.message, params);
-              break;
-            }
+			const asyncMessages = result.messages.map(
+				(m) => (!m.message.then) ?
+					Promise.resolve(m) :
+					m.message.then(message => ({...m, message}))
+			);
+			Promise.all(asyncMessages).then((resolvedMessages) => {
+				for(const m of resolvedMessages) {
+					switch(m.type) {
+						case 'USER': {
+							bot.postMessageToUser(m.user, m.message, params);
+							break;
+						}
 
-            // TODO...
-          }
-        }
-      });
+						// TODO...
+					}
+				}
+			});
 		}
 	});
 });

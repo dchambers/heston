@@ -21,8 +21,8 @@ const createReviewFilter = (filter, getTravelDuration) => (restaurant) => {
 };
 
 const hestonBot = (state = {users: {}, reviews: []}, message, data) => {
-	if(message.match(/^heston review /)) {
-		const restaurant = message.replace(/^heston review /, '');
+	if(message.match(new RegExp(`^${data.botId} review `))) {
+		const restaurant = message.replace(new RegExp(`^${data.botId} review `), '');
 		const userState = {state: AWAITING_RESTAURANT_CONFIRMATION, restaurant};
 		const updatedState = assocPath(['users', data.user.id], userState, state);
 		const asyncMessage = data.getPlaceInfo(restaurant).then(placeInfo => {
@@ -35,7 +35,7 @@ const hestonBot = (state = {users: {}, reviews: []}, message, data) => {
 			userMessage(data.user.name, 'Is this the restaurant you want to review?')
 		]);
 	}
-	else if(message.match(/^show me$/)) {
+	else if(message.match(new RegExp(`^${data.botId} show me`))) {
 		const updatedState = dissocPath(['users', data.user.id, 'qualifyingRestaurants'], state);
 		// TODO: return information about all restaurants
 		return action(updatedState, [
@@ -53,7 +53,7 @@ const hestonBot = (state = {users: {}, reviews: []}, message, data) => {
 				}
 				else {
 					void (state.users[data.user.id].qualifyingRestaurants = qualifyingRestaurants);
-					return `I have ${qualifyingRestaurants.length} recommendation(s) for restaurants near ${parsedSentence.near} from other ${companyData.companyName} staff if you're interested?\nType 'show me' to see them.`;
+					return `I have ${qualifyingRestaurants.length} recommendation(s) for restaurants near ${parsedSentence.near} from other ${companyData.companyName} staff if you're interested?\nType '@heston show me' to see them.`;
 				}
 			})
 

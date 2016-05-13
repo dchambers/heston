@@ -10,7 +10,7 @@ const user = {id: 1, name: 'Fred'};
 // TODO: we need tests around broken promises (i.e. promises that error)
 const getPlaceInfo = restaurant => Promise.resolve({tripAdvisorLink: '@' + restaurant});
 const getTravelDuration = (restaurant) => Promise.resolve((restaurant == DEFAULT_LOCATION) ? 5 : 100);
-const data = () => ({user, getPlaceInfo, getTravelDuration});
+const data = () => ({user, botId: '@heston', getPlaceInfo, getTravelDuration});
 
 describe('conversation with Heston', () => {
 	it('ignores conversations unless they start as expected', () => {
@@ -22,13 +22,13 @@ describe('conversation with Heston', () => {
 		let suggestionResult;
 
 		before(() => {
-			suggestionResult = hestonBot(undefined, 'heston review Krusty Burger', data());
+			suggestionResult = hestonBot(undefined, '@heston review Krusty Burger', data());
 		});
 
 		it('asks the user to confirm restaurants they want to review', () => {
 			expect(suggestionResult.messages.length).to.equal(2);
 			expect(suggestionResult.messages[1].message).to.equal('Is this the restaurant you want to review?');
-      return expect(suggestionResult.messages[0].message).to.eventually.equal('@Krusty Burger');
+			return expect(suggestionResult.messages[0].message).to.eventually.equal('@Krusty Burger');
 		});
 
 		describe('conversation if the user confirms the restaurant', () => {
@@ -91,7 +91,7 @@ describe('conversation with Heston', () => {
 								expect(recommendationResult.messages.length).to.equal(1);
 								return expect(recommendationResult.messages[0].message).to.eventually.equal(
 									'I have 1 recommendation(s) for restaurants near ' + DEFAULT_LOCATION + ' from other Sapient staff if you\'re interested?\n' +
-									'Type \'show me\' to see them.');
+									'Type \'@heston show me\' to see them.');
 							});
 
 							it('does not recommend restaurants that are not in the vicinity', () => {
@@ -106,7 +106,7 @@ describe('conversation with Heston', () => {
 								let solicitedRecommendationResult;
 
 								before(() => {
-									solicitedRecommendationResult = hestonBot(describedResult.state, 'show me', data());
+									solicitedRecommendationResult = hestonBot(describedResult.state, '@heston show me', data());
 								});
 
 								it('displays all of the recommended restaurants in the area', () => {
@@ -123,10 +123,10 @@ describe('conversation with Heston', () => {
 					});
 
 					it('allows a new review to be started', () => {
-						const result = hestonBot(describedResult.state, 'heston review Mo\'s Diner', data());
+						const result = hestonBot(describedResult.state, '@heston review Mo\'s Diner', data());
 						expect(result.messages.length).to.equal(2);
 						expect(result.messages[1].message).to.equal('Is this the restaurant you want to review?');
-            return expect(result.messages[0].message).to.eventually.equal('@Mo\'s Diner');
+						return expect(result.messages[0].message).to.eventually.equal('@Mo\'s Diner');
 					});
 				});
 			});
