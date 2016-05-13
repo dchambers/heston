@@ -106,7 +106,7 @@ describe('conversation with Heston', () => {
 							it('mentions previously recommended restaurants in the vicinity when asked for a recommendation', () => {
 								expect(recommendationResult.messages.length).to.equal(1);
 								return expect(recommendationResult.messages[0].message).to.eventually.equal(
-									'I have 1 recommendation(s) for restaurants near ' + DEFAULT_LOCATION + ' from other Sapient staff if you\'re interested?\n' +
+									'I have 1 recommendation(s) for restaurants near ' + DEFAULT_LOCATION + ' (less than 30min on public transport) from other Sapient staff if you\'re interested?\n' +
 									'Type `@heston show me` to see them.');
 							});
 

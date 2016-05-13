@@ -70,7 +70,8 @@ Google Rating: *${review.placeInfo.rating}* :star:
 				}
 				else {
 					void (state.users[data.user.id].qualifyingRestaurants = qualifyingRestaurants);
-					return `I have ${qualifyingRestaurants.length} recommendation(s) for restaurants near ${parsedSentence.near} from other ${companyData.companyName} staff if you're interested?\nType \`@heston show me\` to see them.`;
+					const nearDescription = (parsedSentence.by === FOOT) ? 'less than 10min by foot' : 'less than 30min on public transport';
+					return `I have ${qualifyingRestaurants.length} recommendation(s) for restaurants near ${parsedSentence.near} (${nearDescription}) from other ${companyData.companyName} staff if you're interested?\nType \`@heston show me\` to see them.`;
 				}
 			}).catch(e => {
 				throw e;
