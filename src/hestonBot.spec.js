@@ -103,6 +103,7 @@ describe('conversation with Heston', () => {
 								recommendationResult = hestonBot(describedResult.state, 'Good restaurant recommendations please?', data());
 							});
 
+							// TODO: we also need tests showing walking options, affordable options & exclusive options
 							it('mentions previously recommended restaurants in the vicinity when asked for a recommendation', () => {
 								expect(recommendationResult.messages.length).to.equal(1);
 								return expect(recommendationResult.messages[0].message).to.eventually.equal(

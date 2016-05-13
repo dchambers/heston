@@ -1,7 +1,7 @@
 /* eslint "no-implicit-side-effects/no-implicit-side-effects": "error" */
 import {assoc, assocPath, dissoc, dissocPath} from 'ramda';
 import filter from 'array-promise-filter';
-import {sentenceParser, FOOT} from './sentenceParser';
+import {sentenceParser, FOOT, LOW, HIGH} from './sentenceParser';
 import companyData from '../companyData';
 
 const AWAITING_RESTAURANT_CONFIRMATION = 1;
@@ -71,7 +71,8 @@ Google Rating: *${review.placeInfo.rating}* :star:
 				else {
 					void (state.users[data.user.id].qualifyingRestaurants = qualifyingRestaurants);
 					const nearDescription = (parsedSentence.by === FOOT) ? 'less than 10min by foot' : 'less than 30min on public transport';
-					return `I have ${qualifyingRestaurants.length} recommendation(s) for restaurants near ${parsedSentence.near} (${nearDescription}) from other ${companyData.companyName} staff if you're interested?\nType \`@heston show me\` to see them.`;
+					const type = (parsedSentence.price === HIGH) ? 'exclusive ' : ((parsedSentence.price === LOW) ? 'affordable ' : '');
+					return `I have ${qualifyingRestaurants.length} recommendation(s) for ${type}restaurants near ${parsedSentence.near} (${nearDescription}) from other ${companyData.companyName} staff if you're interested?\nType \`@heston show me\` to see them.`;
 				}
 			}).catch(e => {
 				throw e;
