@@ -59,7 +59,7 @@ const hestonBot = (state = {users: {}, reviews: []}, message, data) => {
 				}
 				else {
 					void (state.users[data.user.id].qualifyingRestaurants = qualifyingRestaurants);
-					return `I have ${qualifyingRestaurants.length} recommendation(s) for restaurants near ${parsedSentence.near} from other ${companyData.companyName} staff if you're interested?\nType '@heston show me' to see them.`;
+					return `I have ${qualifyingRestaurants.length} recommendation(s) for restaurants near ${parsedSentence.near} from other ${companyData.companyName} staff if you're interested?\nType \`@heston show me\` to see them.`;
 				}
 			}).catch(e => {
 				throw e;
