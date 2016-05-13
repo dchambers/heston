@@ -1,5 +1,5 @@
 /* eslint "no-implicit-side-effects/no-implicit-side-effects": "error" */
-import {assoc, assocPath, dissoc} from 'ramda';
+import {assoc, assocPath, dissoc, dissocPath} from 'ramda';
 import filter from 'array-promise-filter';
 import {sentenceParser, FOOT} from './sentenceParser';
 import companyData from '../companyData';
@@ -35,6 +35,13 @@ const hestonBot = (state = {users: {}, reviews: []}, message, data) => {
 			userMessage(data.user.name, 'Is this the restaurant you want to review?')
 		]);
 	}
+	else if(message.match(/^show me$/)) {
+		const updatedState = dissocPath(['users', data.user.id, 'qualifyingRestaurants'], state);
+		// TODO: return information about all restaurants
+		return action(updatedState, [
+			userMessage(data.user.name, state.users[data.user.id].qualifyingRestaurants[0].restaurant)
+		]);
+	}
 	else {
 		const parsedSentence = sentenceParser(message);
 
@@ -45,6 +52,7 @@ const hestonBot = (state = {users: {}, reviews: []}, message, data) => {
 					return `Sorry, I've got nothing for you. People near ${parsedSentence.near} have yet to share any restaurant recommendations with me.`;
 				}
 				else {
+					void (state.users[data.user.id].qualifyingRestaurants = qualifyingRestaurants);
 					return `I have ${qualifyingRestaurants.length} recommendation(s) for restaurants near ${parsedSentence.near} from other ${companyData.companyName} staff if you're interested?\nType 'show me' to see them.`;
 				}
 			})

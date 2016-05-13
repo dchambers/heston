@@ -109,10 +109,9 @@ describe('conversation with Heston', () => {
 									solicitedRecommendationResult = hestonBot(describedResult.state, 'show me', data());
 								});
 
-								it.skip('displays all of the recommended restaurants in the area', () => {
+								it('displays all of the recommended restaurants in the area', () => {
 									expect(solicitedRecommendationResult.messages.length).to.equal(1);
-									return expect(solicitedRecommendationResult.messages[0].message).to.eventually.equal(
-										'XXX');
+									expect(solicitedRecommendationResult.messages[0].message).to.equal('Krusty Burger');
 								});
 							});
 						});
