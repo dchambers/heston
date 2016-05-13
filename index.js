@@ -1,3 +1,5 @@
+/* global console */
+/* eslint-disable no-console */
 import SlackBot from 'slackbots';
 import storage from 'node-persist';
 import companyData from './companyData';
@@ -46,4 +48,7 @@ bot.on('start', function() {
 			});
 		}
 	});
+
+	const recommendationCount = storage.getItem('state').reviews.length;
+	console.log(`Heston is ready, and armed with ${recommendationCount} recommendation(s).`);
 });
