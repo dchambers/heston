@@ -3,6 +3,12 @@
   "env": {
     "es6": true
   },
+  "rules": {
+    "no-console": 1
+  },
+  "globals": {
+    "console": true
+  },
   "parserOptions": {
     "sourceType": "module",
     "ecmaFeatures": {
