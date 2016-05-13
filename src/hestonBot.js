@@ -13,10 +13,14 @@ const userMessage = (user, message) => ({type:'USER', user, message});
 
 const removeStateProp = dissoc('state');
 
-const createReviewFilter = (filter, getTravelDuration) => (restaurant) => {
-	return getTravelDuration(filter.near, restaurant.location, (filter.by == FOOT) ? 'walking' : 'driving').then((travelDuration) => {
+const createReviewFilter = (filter, getTravelDuration) => (review) => {
+	const loc = review.placeInfo.geometry.location;
+	const locStr = loc.lat + ',' + loc.lng;
+	return getTravelDuration(filter.near, locStr, (filter.by == FOOT) ? 'walking' : 'driving').then((travelDuration) => {
 		const priceMatch = true; // TODO: we need to add pricing information to the restaurant data blob
 		return (travelDuration < ((filter.by == FOOT) ? 10 : 30)) && priceMatch;
+	}).catch(e => { // TODO: do I need this one?
+		throw e;
 	});
 };
 
@@ -28,6 +32,8 @@ const hestonBot = (state = {users: {}, reviews: []}, message, data) => {
 		const asyncMessage = data.getPlaceInfo(restaurant).then(placeInfo => {
 			void (updatedState.users[data.user.id].placeInfo = placeInfo);
 			return placeInfo.tripAdvisorLink;
+		}).catch(e => {
+			throw e;
 		});
 
 		return action(updatedState, [
@@ -55,7 +61,9 @@ const hestonBot = (state = {users: {}, reviews: []}, message, data) => {
 					void (state.users[data.user.id].qualifyingRestaurants = qualifyingRestaurants);
 					return `I have ${qualifyingRestaurants.length} recommendation(s) for restaurants near ${parsedSentence.near} from other ${companyData.companyName} staff if you're interested?\nType '@heston show me' to see them.`;
 				}
-			})
+			}).catch(e => {
+				throw e;
+			});
 
 			return action(state, [
 				userMessage(data.user.name, asyncMessage)

@@ -19,8 +19,7 @@
     "pluralize": "^1.2.1",
     "ramda": "^0.21.0",
     "redux": "^3.5.2",
-    "slackbots": "^0.5.1",
-    "urlencode": "^1.1.0"
+    "slackbots": "^0.5.1"
   },
   "devDependencies": {
     "babel": "^6.5.2",

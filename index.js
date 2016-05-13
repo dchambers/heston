@@ -49,6 +49,7 @@ bot.on('start', function() {
 		}
 	});
 
-	const recommendationCount = storage.getItem('state').reviews.length;
+	const state = storage.getItem('state');
+	const recommendationCount = (state) ? state.reviews.length : 0;
 	console.log(`Heston is ready, and armed with ${recommendationCount} recommendation(s).`);
 });

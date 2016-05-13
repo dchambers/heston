@@ -7,10 +7,19 @@ import {DEFAULT_LOCATION} from './sentenceParser';
 chai.use(chaiAsPromised);
 
 const user = {id: 1, name: 'Fred'};
-// TODO: we need tests around broken promises (i.e. promises that error)
-const getPlaceInfo = restaurant => Promise.resolve({tripAdvisorLink: '@' + restaurant});
-const getTravelDuration = (restaurant) => Promise.resolve((restaurant == DEFAULT_LOCATION) ? 5 : 100);
+const getPlaceInfo = place => Promise.resolve({
+	geometry: {
+		location: {}
+	},
+	tripAdvisorLink: '@' + place
+});
+const getTravelDuration = (from/*, to, mode */) => Promise.resolve((from == DEFAULT_LOCATION) ? 5 : 100);
 const data = () => ({user, botId: '@heston', getPlaceInfo, getTravelDuration});
+
+// TODO: we need tests around broken promises (i.e. promises that error)
+const failingGetPlaceInfo = () => Promise.reject(new Error('No such place!'));
+const failingGetTravelDuration = () => Promise.reject(new Error('No travel information available!'));
+const failingData = () => ({user, getPlaceInfo:failingGetPlaceInfo, getTravelDuration:failingGetTravelDuration}); // eslint-disable-line
 
 describe('conversation with Heston', () => {
 	it('ignores conversations unless they start as expected', () => {
@@ -76,6 +85,9 @@ describe('conversation with Heston', () => {
 							restaurant: 'Krusty Burger',
 							user: 'Fred',
 							placeInfo: {
+								geometry: {
+									location: {}
+								},
 								tripAdvisorLink: '@Krusty Burger'
 							}
 						});
