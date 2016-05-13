@@ -43,10 +43,21 @@ const hestonBot = (state = {users: {}, reviews: []}, message, data) => {
 	}
 	else if(message.match(new RegExp(`^${data.botId} show me`))) {
 		const updatedState = dissocPath(['users', data.user.id, 'qualifyingRestaurants'], state);
-		// TODO: return information about all restaurants
-		return action(updatedState, [
-			userMessage(data.user.name, state.users[data.user.id].qualifyingRestaurants[0].restaurant)
-		]);
+		const sortedReviews = state.users[data.user.id].qualifyingRestaurants.sort((r1, r2) => r1.rating < r2.rating);
+		const userMessages = sortedReviews.map((review, index) => {
+			const reviewText =
+`*${index + 1}.* '${review.placeInfo.name}' was rated *${review.rating}* :star: by *${review.user}*
+
+> ${review.description}
+
+${review.placeInfo.tripAdvisorLink}
+
+Google Rating: *${review.placeInfo.rating}* :star:
+`;
+			return userMessage(data.user.name, reviewText);
+		});
+
+		return action(updatedState, userMessages);
 	}
 	else {
 		const parsedSentence = sentenceParser(message);

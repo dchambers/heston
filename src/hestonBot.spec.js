@@ -8,10 +8,12 @@ chai.use(chaiAsPromised);
 
 const user = {id: 1, name: 'Fred'};
 const getPlaceInfo = place => Promise.resolve({
+	name: place,
 	geometry: {
 		location: {}
 	},
-	tripAdvisorLink: '@' + place
+	rating: 4.9,
+	tripAdvisorLink: 'http://' + place + '.com/'
 });
 const getTravelDuration = (from/*, to, mode */) => Promise.resolve((from == DEFAULT_LOCATION) ? 5 : 100);
 const data = () => ({user, botId: '@heston', getPlaceInfo, getTravelDuration});
@@ -37,7 +39,7 @@ describe('conversation with Heston', () => {
 		it('asks the user to confirm restaurants they want to review', () => {
 			expect(suggestionResult.messages.length).to.equal(2);
 			expect(suggestionResult.messages[1].message).to.equal('Is this the restaurant you want to review?');
-			return expect(suggestionResult.messages[0].message).to.eventually.equal('@Krusty Burger');
+			return expect(suggestionResult.messages[0].message).to.eventually.equal('http://Krusty Burger.com/');
 		});
 
 		describe('conversation if the user confirms the restaurant', () => {
@@ -85,10 +87,12 @@ describe('conversation with Heston', () => {
 							restaurant: 'Krusty Burger',
 							user: 'Fred',
 							placeInfo: {
+								name: 'Krusty Burger',
 								geometry: {
 									location: {}
 								},
-								tripAdvisorLink: '@Krusty Burger'
+								rating: 4.9,
+								tripAdvisorLink: 'http://Krusty Burger.com/'
 							}
 						});
 
@@ -123,7 +127,16 @@ describe('conversation with Heston', () => {
 
 								it('displays all of the recommended restaurants in the area', () => {
 									expect(solicitedRecommendationResult.messages.length).to.equal(1);
-									expect(solicitedRecommendationResult.messages[0].message).to.equal('Krusty Burger');
+									expect(solicitedRecommendationResult.messages[0].message).to.equal(
+`*1.* 'Krusty Burger' was rated *5* :star: by *Fred*
+
+> A++++
+
+http://Krusty Burger.com/
+
+Google Rating: *4.9* :star:
+`
+									);
 								});
 							});
 						});
@@ -138,7 +151,7 @@ describe('conversation with Heston', () => {
 						const result = hestonBot(describedResult.state, '@heston review Mo\'s Diner', data());
 						expect(result.messages.length).to.equal(2);
 						expect(result.messages[1].message).to.equal('Is this the restaurant you want to review?');
-						return expect(result.messages[0].message).to.eventually.equal('@Mo\'s Diner');
+						return expect(result.messages[0].message).to.eventually.equal('http://Mo\'s Diner.com/');
 					});
 				});
 			});
