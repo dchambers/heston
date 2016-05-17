@@ -9,7 +9,8 @@ const AWAITING_RATING = 2;
 const AWAITING_REVIEW = 3;
 
 const action = (state, messages) => ({state, messages});
-const userMessage = (user, message) => ({type:'USER', user, message});
+const reply = (message) => ({type:'REPLY', message});
+// const userMessage = (user, message) => ({type:'USER', user, message});
 
 const removeStateProp = dissoc('state');
 
@@ -37,14 +38,14 @@ const hestonBot = (state = {users: {}, reviews: []}, message, data) => {
 		});
 
 		return action(updatedState, [
-			userMessage(data.user.name, asyncMessage),
-			userMessage(data.user.name, 'Is this the restaurant you want to review?')
+			reply(asyncMessage),
+			reply('Is this the restaurant you want to review?')
 		]);
 	}
 	else if(message.match(new RegExp(`^${data.botId} show me`))) {
 		const updatedState = dissocPath(['users', data.user.id, 'qualifyingRestaurants'], state);
 		const sortedReviews = state.users[data.user.id].qualifyingRestaurants.sort((r1, r2) => r1.rating < r2.rating);
-		const userMessages = sortedReviews.map((review, index) => {
+		const senderessages = sortedReviews.map((review, index) => {
 			const reviewText =
 `*${index + 1}.* '${review.placeInfo.name}' was rated *${review.rating}* :star: by *${review.user}*
 
@@ -54,10 +55,10 @@ ${review.placeInfo.tripAdvisorLink}
 
 Google Rating: *${review.placeInfo.rating}* :star:
 `;
-			return userMessage(data.user.name, reviewText);
+			return reply(reviewText);
 		});
 
-		return action(updatedState, userMessages);
+		return action(updatedState, senderessages);
 	}
 	else {
 		const parsedSentence = sentenceParser(message);
@@ -79,7 +80,7 @@ Google Rating: *${review.placeInfo.rating}* :star:
 			});
 
 			return action(state, [
-				userMessage(data.user.name, asyncMessage)
+				reply(asyncMessage)
 			]);
 		}
 	}
@@ -90,13 +91,13 @@ Google Rating: *${review.placeInfo.rating}* :star:
 			if(message.match(/yes/)) {
 				const updatedState = assocPath(['users', data.user.id], {...userState, state: AWAITING_RATING}, state);
 				return action(updatedState, [
-					userMessage(data.user.name, 'What\'s your rating from 0 to 5?')
+					reply('What\'s your rating from 0 to 5?')
 				]);
 			}
 			else {
 				const updatedState = assocPath(['users', data.user.id], {}, state);
 				return action(updatedState, [
-					userMessage(data.user.name, 'Okay, please try entering the name differently.')
+					reply('Okay, please try entering the name differently.')
 				]);
 			}
 		}
@@ -105,13 +106,13 @@ Google Rating: *${review.placeInfo.rating}* :star:
 			if(message.match(/[0-5]/)) {
 				const updatedState = assocPath(['users', data.user.id], {...userState, rating: Number(message), state: AWAITING_REVIEW}, state);
 				return action(updatedState, [
-					userMessage(data.user.name, 'Thanks! Can you please provide some textual content to justify that rating.')
+					reply('Thanks! Can you please provide some textual content to justify that rating.')
 				]);
 			}
 			else {
 				const updatedState = assocPath(['users', data.user.id], {}, state);
 				return action(updatedState, [
-					userMessage(data.user.name, 'Fine, consider this conversation over!!')
+					reply('Fine, consider this conversation over!!')
 				]);
 			}
 		}
@@ -122,7 +123,7 @@ Google Rating: *${review.placeInfo.rating}* :star:
 			const updatedState2 = assoc('reviews', [...updatedState.reviews, restaurantReview], updatedState);
 
 			return action(updatedState2, [
-				userMessage(data.user.name, 'Your review has been noted my friend!')
+				reply('Your review has been noted my friend!')
 			]);
 		}
 

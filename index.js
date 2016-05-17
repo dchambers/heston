@@ -1,7 +1,6 @@
 // TODO:
-//  1. Have Heston respond to users on the channel they communicated over.
-//  2. Make sure we only accept answers on the originating channel when we are in the middle of a conversation.
-//  3. Have Heston automatically announce himself on any channels that have foody words in them, and let him explain how reviews can be provided and solicited.
+//  1. Make sure we only accept answers on the originating channel when we are in the middle of a conversation.
+//  2. Have Heston automatically announce himself on any channels that have foody words in them, and let him explain how reviews can be provided and solicited.
 
 /* global console */
 /* eslint-disable no-console */
@@ -47,7 +46,22 @@ bot.on('start', function() {
 							break;
 						}
 
-						// TODO...
+						case 'REPLY': {
+							const channel = bot.channels.filter((channel) => channel.id === data.channel)[0];
+							const group = bot.groups.filter((group) => group.id === data.channel)[0];
+
+							if(channel) {
+								bot.postMessageToChannel(channel.name, m.message, params);
+							}
+							else if(group) {
+								bot.postMessageToGroup(group.name, m.message, params);
+							}
+							else {
+								bot.postMessageToUser(user.name, m.message, params);
+							}
+
+							break;
+						}
 					}
 				}
 			});
