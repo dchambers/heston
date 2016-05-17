@@ -1,6 +1,5 @@
 // TODO:
-//  1. Make sure we only accept answers on the originating channel when we are in the middle of a conversation.
-//  2. Have Heston automatically announce himself on any channels that have foody words in them, and let him explain how reviews can be provided and solicited.
+//  1. Have Heston automatically announce himself on any channels that have foody words in them, and let him explain how reviews can be provided and solicited.
 
 /* global console */
 /* eslint-disable no-console */
@@ -29,7 +28,10 @@ bot.on('start', function() {
 	bot.on('message', function(data) {
 		if(data.type == 'message' && data.text && data.bot_id === undefined) {
 			const user = bot.users.filter((user) => user.id === data.user)[0];
-			const botData = {user, botId, getPlaceInfo, getTravelDuration};
+			const channel = bot.channels.filter((channel) => channel.id === data.channel)[0];
+			const group = bot.groups.filter((group) => group.id === data.channel)[0];
+			const channelId = (group) ? '#' + group.name : ((channel) ? '#' + channel.name : '@' + user.name);
+			const botData = {user, channel: channelId, botId, getPlaceInfo, getTravelDuration};
 			const result = hestonBot(storage.getItem('state'), data.text, botData);
 			storage.setItem('state', result.state);
 
@@ -47,9 +49,6 @@ bot.on('start', function() {
 						}
 
 						case 'REPLY': {
-							const channel = bot.channels.filter((channel) => channel.id === data.channel)[0];
-							const group = bot.groups.filter((group) => group.id === data.channel)[0];
-
 							if(channel) {
 								bot.postMessageToChannel(channel.name, m.message, params);
 							}

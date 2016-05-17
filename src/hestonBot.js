@@ -28,10 +28,10 @@ const createReviewFilter = (filter, getTravelDuration) => (review) => {
 const hestonBot = (state = {users: {}, reviews: []}, message, data) => {
 	if(message.match(new RegExp(`^${data.botId} review `))) {
 		const restaurant = message.replace(new RegExp(`^${data.botId} review `), '');
-		const userState = {state: AWAITING_RESTAURANT_CONFIRMATION, restaurant};
-		const updatedState = assocPath(['users', data.user.id], userState, state);
+		const conversationState = {state: AWAITING_RESTAURANT_CONFIRMATION, restaurant};
+		const updatedState = assocPath(['users', data.user.id, data.channel], conversationState, state);
 		const asyncMessage = data.getPlaceInfo(restaurant).then(placeInfo => {
-			void (updatedState.users[data.user.id].placeInfo = placeInfo);
+			void (updatedState.users[data.user.id][data.channel].placeInfo = placeInfo);
 			return placeInfo.tripAdvisorLink;
 		}).catch(e => {
 			throw e;
@@ -43,8 +43,8 @@ const hestonBot = (state = {users: {}, reviews: []}, message, data) => {
 		]);
 	}
 	else if(message.match(new RegExp(`^${data.botId} show me`))) {
-		const updatedState = dissocPath(['users', data.user.id, 'qualifyingRestaurants'], state);
-		const sortedReviews = state.users[data.user.id].qualifyingRestaurants.sort((r1, r2) => r1.rating < r2.rating);
+		const updatedState = dissocPath(['users', data.user.id, data.channel, 'qualifyingRestaurants'], state);
+		const sortedReviews = state.users[data.user.id][data.channel].qualifyingRestaurants.sort((r1, r2) => r1.rating < r2.rating);
 		const senderessages = sortedReviews.map((review, index) => {
 			const reviewText =
 `*${index + 1}.* '${review.placeInfo.name}' was rated *${review.rating}* :star: by *${review.user}*
@@ -70,7 +70,8 @@ Google Rating: *${review.placeInfo.rating}* :star:
 					return `Sorry, I've got nothing for you. People near ${parsedSentence.near} have yet to share any restaurant recommendations with me.`;
 				}
 				else {
-					void (state.users[data.user.id].qualifyingRestaurants = qualifyingRestaurants);
+					const userState = state.users[data.user.id];
+					void (state.users[data.user.id] = assocPath([data.channel, 'qualifyingRestaurants'], qualifyingRestaurants, userState));
 					const nearDescription = (parsedSentence.by === FOOT) ? 'less than 10min by foot' : 'less than 30min on public transport';
 					const type = (parsedSentence.price === HIGH) ? 'exclusive ' : ((parsedSentence.price === LOW) ? 'affordable ' : '');
 					return `I have ${qualifyingRestaurants.length} recommendation(s) for ${type}restaurants near ${parsedSentence.near} (${nearDescription}) from other ${companyData.companyName} staff if you're interested?\nType \`@heston show me\` to see them.`;
@@ -86,16 +87,17 @@ Google Rating: *${review.placeInfo.rating}* :star:
 	}
 
 	const userState = state.users[data.user.id] || {};
-	switch(userState.state) {
+	const conversationState = userState[data.channel] || {};
+	switch(conversationState.state) {
 		case AWAITING_RESTAURANT_CONFIRMATION: {
 			if(message.match(/yes/)) {
-				const updatedState = assocPath(['users', data.user.id], {...userState, state: AWAITING_RATING}, state);
+				const updatedState = assocPath(['users', data.user.id, data.channel], {...conversationState, state: AWAITING_RATING}, state);
 				return action(updatedState, [
 					reply('What\'s your rating from 0 to 5?')
 				]);
 			}
 			else {
-				const updatedState = assocPath(['users', data.user.id], {}, state);
+				const updatedState = assocPath(['users', data.user.id, data.channel], {}, state);
 				return action(updatedState, [
 					reply('Okay, please try entering the name differently.')
 				]);
@@ -104,13 +106,13 @@ Google Rating: *${review.placeInfo.rating}* :star:
 
 		case AWAITING_RATING: {
 			if(message.match(/[0-5]/)) {
-				const updatedState = assocPath(['users', data.user.id], {...userState, rating: Number(message), state: AWAITING_REVIEW}, state);
+				const updatedState = assocPath(['users', data.user.id, data.channel], {...conversationState, rating: Number(message), state: AWAITING_REVIEW}, state);
 				return action(updatedState, [
 					reply('Thanks! Can you please provide some textual content to justify that rating.')
 				]);
 			}
 			else {
-				const updatedState = assocPath(['users', data.user.id], {}, state);
+				const updatedState = assocPath(['users', data.user.id, data.channel], {}, state);
 				return action(updatedState, [
 					reply('Fine, consider this conversation over!!')
 				]);
@@ -118,8 +120,8 @@ Google Rating: *${review.placeInfo.rating}* :star:
 		}
 
 		case AWAITING_REVIEW: {
-			const restaurantReview = removeStateProp({...userState, user: data.user.name, description: message});
-			const updatedState = assocPath(['users', data.user.id], {}, state);
+			const restaurantReview = removeStateProp({...conversationState, user: data.user.name, description: message});
+			const updatedState = assocPath(['users', data.user.id, data.channel], {}, state);
 			const updatedState2 = assoc('reviews', [...updatedState.reviews, restaurantReview], updatedState);
 
 			return action(updatedState2, [
