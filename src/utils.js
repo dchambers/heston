@@ -24,7 +24,10 @@ export const getPlaceInfo = (place) => {
 export const getTravelDuration = (from, to, mode) => {
   const url = `https://maps.googleapis.com/maps/api/distancematrix/json?mode=${mode}&origins=${enc(from)}&destinations=${enc(to)}`;
   log(url + ' (getTravelDuration)');
-  return fetch(url).then(r => r.json()).then(json => json.rows[0].elements[0].duration.value / 60);
+  return fetch(url)
+    .then(r => r.json())
+    .then(json => json.rows[0].elements[0].duration)
+    .then(duration => (!duration) ? Number.MAX_SAFE_INTEGER : duration.value / 60);
 };
 
 export const getTripAdvisorPage = (restaurant) => {
