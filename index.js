@@ -6,10 +6,15 @@
 import SlackBot from 'slackbots';
 import storage from 'node-persist';
 import companyData from './companyData';
+import process from 'process';
 import hestonBot from './src/hestonBot';
 import {getPlaceInfo, getTravelDuration} from './src/utils';
 
 const log = console.log;
+
+process.on('unhandledRejection', (e) => {
+	throw e;
+});
 
 // create a bot
 var bot = new SlackBot(companyData);

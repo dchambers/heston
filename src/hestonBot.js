@@ -24,8 +24,6 @@ const createReviewFilter = (filter, getTravelDuration) => (review) => {
 	return getTravelDuration(filter.near, locStr, (filter.by == FOOT) ? 'walking' : 'driving').then((travelDuration) => {
 		const priceMatch = true; // TODO: we need to add pricing information to the restaurant data blob
 		return (travelDuration < ((filter.by == FOOT) ? 10 : 30)) && priceMatch;
-	}).catch(e => { // TODO: do I need this one?
-		throw e;
 	});
 };
 
@@ -38,8 +36,6 @@ const hestonBot = (state = {users: {}, reviews: []}, message, data) => {
 		const asyncMessage = data.getPlaceInfo(restaurant).then(placeInfo => {
 			void (updatedState.users[data.user.id][data.channel].placeInfo = placeInfo);
 			return placeInfo.tripAdvisorLink;
-		}).catch(e => {
-			throw e;
 		});
 
 		return action(updatedState, [
@@ -83,8 +79,6 @@ Google Rating: *${review.placeInfo.rating}* :star:
 					const type = (parsedSentence.price === HIGH) ? 'exclusive ' : ((parsedSentence.price === LOW) ? 'affordable ' : '');
 					return `I have ${qualifyingRestaurants.length} recommendation(s) for ${type}restaurants near ${parsedSentence.near} (${nearDescription}) from other ${companyData.companyName} staff if you're interested?\nType \`@heston show me\` to see them.`;
 				}
-			}).catch(e => {
-				throw e;
 			});
 
 			return action(state, [
