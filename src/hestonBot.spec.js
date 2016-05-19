@@ -108,7 +108,7 @@ describe('conversation with Heston', () => {
 								expect(recommendationResult.messages.length).to.equal(1);
 								return expect(recommendationResult.messages[0].message).to.eventually.equal(
 									'I have 1 recommendation(s) for restaurants near ' + DEFAULT_LOCATION + ' (less than 30min on public transport) from other Sapient staff if you\'re interested?\n' +
-									'Type `@heston show me` to see them.');
+									'Type `show me` to see them.');
 							});
 
 							it('does not recommend restaurants that are not in the vicinity', () => {
@@ -123,7 +123,7 @@ describe('conversation with Heston', () => {
 								let solicitedRecommendationResult;
 
 								before(() => {
-									solicitedRecommendationResult = hestonBot(describedResult.state, '@heston show me', data());
+									solicitedRecommendationResult = hestonBot(describedResult.state, 'show me', data());
 								});
 
 								it('displays all of the recommended restaurants in the area', () => {

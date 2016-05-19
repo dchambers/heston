@@ -43,7 +43,7 @@ const hestonBot = (state = {users: {}, reviews: []}, message, data) => {
 			reply('Is this the restaurant you want to review?')
 		]);
 	}
-	else if(message.match(new RegExp(`^${data.botId} show me`))) {
+	else if(message.match(new RegExp(`^show me`))) {
 		void(logMessage(data.channel, message));
 		const updatedState = dissocPath(['users', data.user.id, data.channel, 'qualifyingRestaurants'], state);
 		const sortedReviews = state.users[data.user.id][data.channel].qualifyingRestaurants.sort((r1, r2) => r1.rating < r2.rating);
@@ -77,7 +77,7 @@ Google Rating: *${review.placeInfo.rating}* :star:
 					void (state.users[data.user.id] = assocPath([data.channel, 'qualifyingRestaurants'], qualifyingRestaurants, userState));
 					const nearDescription = (parsedSentence.by === FOOT) ? 'less than 10min by foot' : 'less than 30min on public transport';
 					const type = (parsedSentence.price === HIGH) ? 'exclusive ' : ((parsedSentence.price === LOW) ? 'affordable ' : '');
-					return `I have ${qualifyingRestaurants.length} recommendation(s) for ${type}restaurants near ${parsedSentence.near} (${nearDescription}) from other ${companyData.companyName} staff if you're interested?\nType \`@heston show me\` to see them.`;
+					return `I have ${qualifyingRestaurants.length} recommendation(s) for ${type}restaurants near ${parsedSentence.near} (${nearDescription}) from other ${companyData.companyName} staff if you're interested?\nType \`show me\` to see them.`;
 				}
 			});
 
