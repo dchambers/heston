@@ -1,5 +1,7 @@
 // TODO:
-//  1. Have Heston automatically announce himself on any channels that have foody words in them, and let him explain how reviews can be provided and solicited.
+//  1. Find out why we keep getting the wrong locations.
+//  2. encode URLs in a way that allows them to be clicked from the terminal
+//  2. Have Heston automatically announce himself on any channels that have foody words in them, and let him explain how reviews can be provided and
 
 /* global console */
 /* eslint-disable no-console */
