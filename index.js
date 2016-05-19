@@ -9,6 +9,8 @@ import companyData from './companyData';
 import hestonBot from './src/hestonBot';
 import {getPlaceInfo, getTravelDuration} from './src/utils';
 
+const log = console.log;
+
 // create a bot
 var bot = new SlackBot(companyData);
 
@@ -50,12 +52,15 @@ bot.on('start', function() {
 
 						case 'REPLY': {
 							if(channel) {
+								log(`> #${channel.name}: ${m.message}`);
 								bot.postMessageToChannel(channel.name, m.message, params);
 							}
 							else if(group) {
+								log(`> #${group.name}: ${m.message}`);
 								bot.postMessageToGroup(group.name, m.message, params);
 							}
 							else {
+								log(`> @${user.name}: ${m.message}`);
 								bot.postMessageToUser(user.name, m.message, params);
 							}
 

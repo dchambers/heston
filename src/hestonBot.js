@@ -14,6 +14,10 @@ const reply = (message) => ({type:'REPLY', message});
 
 const removeStateProp = dissoc('state');
 
+const logMessage = (channel, message) => {
+	void(console.log(`< ${channel}: ${message}`)); // eslint-disable-line no-console
+};
+
 const createReviewFilter = (filter, getTravelDuration) => (review) => {
 	const loc = review.placeInfo.geometry.location;
 	const locStr = loc.lat + ',' + loc.lng;
@@ -27,6 +31,7 @@ const createReviewFilter = (filter, getTravelDuration) => (review) => {
 
 const hestonBot = (state = {users: {}, reviews: []}, message, data) => {
 	if(message.match(new RegExp(`^${data.botId} review `))) {
+		void(logMessage(data.channel, message));
 		const restaurant = message.replace(new RegExp(`^${data.botId} review `), '');
 		const conversationState = {state: AWAITING_RESTAURANT_CONFIRMATION, restaurant};
 		const updatedState = assocPath(['users', data.user.id, data.channel], conversationState, state);
@@ -43,6 +48,7 @@ const hestonBot = (state = {users: {}, reviews: []}, message, data) => {
 		]);
 	}
 	else if(message.match(new RegExp(`^${data.botId} show me`))) {
+		void(logMessage(data.channel, message));
 		const updatedState = dissocPath(['users', data.user.id, data.channel, 'qualifyingRestaurants'], state);
 		const sortedReviews = state.users[data.user.id][data.channel].qualifyingRestaurants.sort((r1, r2) => r1.rating < r2.rating);
 		const senderessages = sortedReviews.map((review, index) => {
@@ -61,6 +67,7 @@ Google Rating: *${review.placeInfo.rating}* :star:
 		return action(updatedState, senderessages);
 	}
 	else {
+		void(logMessage(data.channel, message));
 		const parsedSentence = sentenceParser(message);
 
 		if(parsedSentence) {
