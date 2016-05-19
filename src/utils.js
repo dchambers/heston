@@ -14,7 +14,7 @@ export const getPlaceInfo = (place) => {
   log(url + ' (getPlaceInfo)');
   return fetch(url).then(r => r.json()).then(json => json.results[0]).then(placeInfo => {
     return new Promise((resolve/*, reject*/) => {
-      getTripAdvisorPage(placeInfo.name).then(tripAdvisorLink => {
+      getTripAdvisorPage(placeInfo.formatted_address).then(tripAdvisorLink => {
         resolve({...placeInfo, tripAdvisorLink});
       });
     });
