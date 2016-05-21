@@ -2,7 +2,7 @@ import {zipObj} from 'ramda';
 import pluralize from 'pluralize';
 import config from '../config'
 
-export const DEFAULT_LOCATION = config.companyAddress;
+export const DEFAULT_LOCATION = config.company.address;
 
 export const FOOT = 'FOOT';
 export const PUBLIC_TRANSPORT = 'PUBLIC_TRANSPORT';

@@ -18,7 +18,7 @@ process.on('unhandledRejection', (e) => {
 });
 
 // create a bot
-var bot = new SlackBot(config);
+var bot = new SlackBot({name: config.bot.name, token: config.apiKey.slack});
 
 storage.initSync({
 	continuous: false,

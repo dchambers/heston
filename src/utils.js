@@ -1,8 +1,8 @@
 import fetch from 'node-fetch';
 import config from '../config';
 
-const API_KEY = config.googleApiKey;
-const SEARCH_ENGINE = config.googleSearchKey;
+const API_KEY = config.apiKey.google;
+const SEARCH_ENGINE = config.apiKey.googleSearch;
 const enc = encodeURIComponent;
 
 const log = message => {
