@@ -6,7 +6,7 @@
 /* eslint-disable no-console */
 import SlackBot from 'slackbots';
 import storage from 'node-persist';
-import companyData from './companyData';
+import config from './config';
 import process from 'process';
 import hestonBot from './src/hestonBot';
 import {getPlaceInfo, getTravelDuration} from './src/utils';
@@ -18,7 +18,7 @@ process.on('unhandledRejection', (e) => {
 });
 
 // create a bot
-var bot = new SlackBot(companyData);
+var bot = new SlackBot(config);
 
 storage.initSync({
 	continuous: false,

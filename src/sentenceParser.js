@@ -1,8 +1,8 @@
 import {zipObj} from 'ramda';
 import pluralize from 'pluralize';
-import companyData from '../companyData'
+import config from '../config'
 
-export const DEFAULT_LOCATION = companyData.companyAddress;
+export const DEFAULT_LOCATION = config.companyAddress;
 
 export const FOOT = 'FOOT';
 export const PUBLIC_TRANSPORT = 'PUBLIC_TRANSPORT';

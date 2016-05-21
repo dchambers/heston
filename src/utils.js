@@ -1,8 +1,8 @@
 import fetch from 'node-fetch';
-import companyData from '../companyData';
+import config from '../config';
 
-const API_KEY = companyData.googleApiKey;
-const SEARCH_ENGINE = companyData.googleSearchKey;
+const API_KEY = config.googleApiKey;
+const SEARCH_ENGINE = config.googleSearchKey;
 const enc = encodeURIComponent;
 
 const log = message => {

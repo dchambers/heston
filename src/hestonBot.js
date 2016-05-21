@@ -2,7 +2,7 @@
 import {assoc, assocPath, dissoc, dissocPath} from 'ramda';
 import filter from 'array-promise-filter';
 import {sentenceParser, FOOT, LOW, HIGH} from './sentenceParser';
-import companyData from '../companyData';
+import config from '../config';
 
 const AWAITING_RESTAURANT_CONFIRMATION = 1;
 const AWAITING_RATING = 2;
@@ -77,7 +77,7 @@ Google Rating: *${review.placeInfo.rating}* :star:
 					void (state.users[data.user.id] = assocPath([data.channel, 'qualifyingRestaurants'], qualifyingRestaurants, userState));
 					const nearDescription = (parsedSentence.by === FOOT) ? 'less than 10min by foot' : 'less than 30min on public transport';
 					const type = (parsedSentence.price === HIGH) ? 'exclusive ' : ((parsedSentence.price === LOW) ? 'affordable ' : '');
-					return `I have ${qualifyingRestaurants.length} recommendation(s) for ${type}restaurants near ${parsedSentence.near} (${nearDescription}) from other ${companyData.companyName} staff if you're interested?\nType \`show me\` to see them.`;
+					return `I have ${qualifyingRestaurants.length} recommendation(s) for ${type}restaurants near ${parsedSentence.near} (${nearDescription}) from other ${config.companyName} staff if you're interested?\nType \`show me\` to see them.`;
 				}
 			});
 
