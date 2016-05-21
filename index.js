@@ -29,7 +29,7 @@ bot.on('start', function() {
 	const botUser = bot.users.filter((user) => (user.name == 'heston'))[0];
 	const botId = `<@${botUser.id}>`;
 	const params = {
-		icon_emoji: ':cherries:',
+		icon_emoji: config.bot.emoji,
 		unfurl_links: true
 	};
 
