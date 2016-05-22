@@ -1,8 +1,6 @@
 import fetch from 'node-fetch';
 import config from '../config';
 
-const API_KEY = config.apiKey.google;
-const SEARCH_ENGINE = config.apiKey.googleSearch;
 const enc = encodeURIComponent;
 
 const log = message => {
@@ -10,7 +8,7 @@ const log = message => {
 };
 
 export const getPlaceInfo = (place) => {
-  const url = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${enc(place)}&key=${API_KEY}`;
+  const url = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${enc(place)}&key=${config.apiKey.google}`;
   log(url + ' (getPlaceInfo)');
   return fetch(url).then(r => r.json()).then(json => json.results[0]).then(placeInfo => {
     return new Promise((resolve/*, reject*/) => {
@@ -31,7 +29,7 @@ export const getTravelDuration = (from, to, mode) => {
 };
 
 export const getTripAdvisorPage = (restaurant) => {
-  const url = `https://www.googleapis.com/customsearch/v1?q=${enc(restaurant)}&cx=${SEARCH_ENGINE}&key=${API_KEY}`;
+  const url = `https://www.googleapis.com/customsearch/v1?q=${enc(restaurant)}&cx=${config.apiKey.googleSearch}&key=${config.apiKey.google}`;
   log(url + ' (getTripAdvisorPage)');
   return fetch(url).then(r => r.json()).then(json => json.items[0].link);
 };

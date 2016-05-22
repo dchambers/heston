@@ -2,7 +2,6 @@ import {describe, it, before} from 'mocha';
 import chai, {expect} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import hestonBot from './hestonBot';
-import {DEFAULT_LOCATION} from './sentenceParser';
 import config from '../config';
 
 chai.use(chaiAsPromised);
@@ -16,7 +15,7 @@ const getPlaceInfo = place => Promise.resolve({
 	rating: 4.9,
 	tripAdvisorLink: 'http://' + place + '.com/'
 });
-const getTravelDuration = (from/*, to, mode */) => Promise.resolve((from == DEFAULT_LOCATION) ? 5 : 100);
+const getTravelDuration = (from/*, to, mode */) => Promise.resolve((from == config.company.address) ? 5 : 100);
 const data = () => ({user, botId: '@heston', getPlaceInfo, getTravelDuration});
 
 // TODO: we need tests around broken promises (i.e. promises that error)
@@ -108,7 +107,7 @@ describe('conversation with Heston', () => {
 							it('mentions previously recommended restaurants in the vicinity when asked for a recommendation', () => {
 								expect(recommendationResult.messages.length).to.equal(1);
 								return expect(recommendationResult.messages[0].message).to.eventually.equal(
-									'I have 1 recommendation(s) for restaurants near ' + DEFAULT_LOCATION + ' (less than 30min on public transport) from other ' + config.company.name + ' staff if you\'re interested?\n' +
+									'I have 1 recommendation(s) for restaurants near ' + config.company.address + ' (less than 30min on public transport) from other ' + config.company.name + ' staff if you\'re interested?\n' +
 									'Type `show me` to see them.');
 							});
 

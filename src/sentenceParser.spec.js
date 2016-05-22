@@ -1,11 +1,12 @@
 import {describe, it} from 'mocha';
 import {expect} from 'chai';
-import {sentenceParser as parsedSentence, DEFAULT_LOCATION, FOOT, PUBLIC_TRANSPORT, LOW, HIGH} from './sentenceParser';
+import {sentenceParser as parsedSentence, FOOT, PUBLIC_TRANSPORT, LOW, HIGH} from './sentenceParser';
+import config from '../config';
 
 describe('sentenceParser', () => {
 	describe('restaurant recommendations', () => {
 		const restaurant = {
-			near: DEFAULT_LOCATION,
+			near: config.company.address,
 			by: PUBLIC_TRANSPORT
 		};
 
@@ -35,7 +36,7 @@ describe('sentenceParser', () => {
 	describe('lunch recommendations', () => {
 		const lunch = {
 			price: LOW,
-			near: DEFAULT_LOCATION,
+			near: config.company.address,
 			by: FOOT
 		};
 
@@ -67,7 +68,7 @@ describe('sentenceParser', () => {
 	describe('client lunches', () => {
 		const clientLunch = {
 			price: HIGH,
-			near: DEFAULT_LOCATION,
+			near: config.company.address,
 			by: FOOT
 		};
 

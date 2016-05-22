@@ -2,8 +2,6 @@ import {zipObj} from 'ramda';
 import pluralize from 'pluralize';
 import config from '../config'
 
-export const DEFAULT_LOCATION = config.company.address;
-
 export const FOOT = 'FOOT';
 export const PUBLIC_TRANSPORT = 'PUBLIC_TRANSPORT';
 
@@ -27,8 +25,8 @@ export const sentenceParser = (sentence) => {
     if((restaurantQuery || lunchQuery) && (words.trying || words.good || words.nice || words.favourite ||
       words.best || words.recommend || words.recommendation)) {
       const locationMatches = sentence.match(/(in|near) (.*)\?/);
-      const rawLocation = (locationMatches) ? locationMatches[2] : DEFAULT_LOCATION;
-      const location = rawLocation.replace(/(here|town|the city|the office)/i, DEFAULT_LOCATION);
+      const rawLocation = (locationMatches) ? locationMatches[2] : config.company.address;
+      const location = rawLocation.replace(/(here|town|the city|the office)/i, config.company.address);
       const foodQuery = (restaurantQuery) ?
         {
           near: location,
