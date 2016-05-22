@@ -1,0 +1,15 @@
+{
+	"bot": {
+		"name": "Heston",
+		"emoji": ":hamburger:"
+	},
+	"company": {
+		"name": "My Company",
+		"address": "123 Long Lane"
+	},
+	"apiKey": {
+		"slack": "ABCDEFGHIJKLMNOPQRSTUVWZYZ0123456789",
+		"google": "ABCDEFGHIJKLMNOPQRSTUVWZYZ0123456789",
+		"googleSearch": "ABCDEFGHIJKLMNOPQRSTUVWZYZ0123456789"
+	}
+}

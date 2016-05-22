@@ -3,6 +3,7 @@ import chai, {expect} from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import hestonBot from './hestonBot';
 import {DEFAULT_LOCATION} from './sentenceParser';
+import config from '../config';
 
 chai.use(chaiAsPromised);
 
@@ -107,7 +108,7 @@ describe('conversation with Heston', () => {
 							it('mentions previously recommended restaurants in the vicinity when asked for a recommendation', () => {
 								expect(recommendationResult.messages.length).to.equal(1);
 								return expect(recommendationResult.messages[0].message).to.eventually.equal(
-									'I have 1 recommendation(s) for restaurants near ' + DEFAULT_LOCATION + ' (less than 30min on public transport) from other Sapient staff if you\'re interested?\n' +
+									'I have 1 recommendation(s) for restaurants near ' + DEFAULT_LOCATION + ' (less than 30min on public transport) from other ' + config.company.name + ' staff if you\'re interested?\n' +
 									'Type `show me` to see them.');
 							});
 
