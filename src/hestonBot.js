@@ -3,6 +3,7 @@ import {assoc, assocPath, dissoc, dissocPath} from 'ramda';
 import filter from 'array-promise-filter';
 import {sentenceParser, FOOT, LOW, HIGH} from './sentenceParser';
 import config from '../config';
+import log from './log';
 
 const AWAITING_RESTAURANT_CONFIRMATION = 1;
 const AWAITING_RATING = 2;
@@ -15,7 +16,7 @@ const reply = (message) => ({type:'REPLY', message});
 const removeStateProp = dissoc('state');
 
 const logMessage = (channel, message) => {
-	void(console.log(`< ${channel}: ${message}`)); // eslint-disable-line no-console
+	void(log(`< ${channel}: ${message}`)); // eslint-disable-line no-console
 };
 
 const createReviewFilter = (filter, getTravelDuration) => (review) => {

@@ -3,15 +3,15 @@
 //  2. Have Heston automatically announce himself on any channels that have foody words in them, and let him explain how reviews can be provided and
 
 /* global console */
-/* eslint-disable no-console */
 import SlackBot from 'slackbots';
 import storage from 'node-persist';
 import config from './config';
 import process from 'process';
 import hestonBot from './src/hestonBot';
 import {getPlaceInfo, getTravelDuration} from './src/utils';
+import log, {setLogger} from './src/log';
 
-const log = console.log;
+setLogger(console.info); // eslint-disable-line no-console
 
 process.on('unhandledRejection', (e) => {
 	throw e;

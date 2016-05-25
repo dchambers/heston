@@ -1,10 +1,11 @@
 import fetch from 'node-fetch';
 import config from '../config';
+import origLog from './log';
 
 const enc = encodeURIComponent;
 
 const log = message => {
-  console.log('~' + message); // eslint-disable-line no-console
+  origLog('~' + message); // eslint-disable-line no-console
 };
 
 export const getPlaceInfo = (place) => {
