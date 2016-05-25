@@ -2,13 +2,13 @@
   "name": "heston",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "start.js",
   "scripts": {
     "pretest": "eslint src",
     "test": "mocha --compilers js:babel-core/register src/**/*.spec.js",
     "test:debug": "mocha --compilers js:babel-core/register --debug-brk src/**/*.spec.js",
     "test-integration": "mocha --compilers js:babel-core/register test/**/*.spec.js",
-    "start": "babel-node index.js",
+    "start": "node start.js",
     "update-config": "node config/update.js"
   },
   "author": "",
