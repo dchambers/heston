@@ -15,6 +15,7 @@
   "license": "ISC",
   "dependencies": {
     "array-promise-filter": "^1.0.1",
+    "crypto-js": "^3.1.6",
     "node-fetch": "^1.5.1",
     "node-persist": "0.0.11",
     "pluralize": "^1.2.1",
@@ -30,7 +31,6 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "chai-as-promised": "^5.3.0",
-    "crypto-js": "^3.1.6",
     "eslint": "^2.8.0",
     "eslint-plugin-no-implicit-side-effects": "^1.0.0",
     "mocha": "^2.4.5",
