@@ -80,5 +80,5 @@ bot.on('start', function() {
 
 	const state = storage.getItem('state');
 	const recommendationCount = (state) ? state.reviews.length : 0;
-	console.log(`Heston is ready, and armed with ${recommendationCount} recommendation(s).`);
+	log(`Heston is ready, and armed with ${recommendationCount} recommendation(s).`);
 });
