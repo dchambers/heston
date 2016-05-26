@@ -21,7 +21,7 @@ const data = () => ({user, botId: '@heston', getPlaceInfo, getTravelDuration});
 // TODO: we need tests around broken promises (i.e. promises that error)
 const failingGetPlaceInfo = () => Promise.reject(new Error('No such place!'));
 const failingGetTravelDuration = () => Promise.reject(new Error('No travel information available!'));
-const failingData = () => ({user, getPlaceInfo:failingGetPlaceInfo, getTravelDuration:failingGetTravelDuration}); // eslint-disable-line
+const failingData = () => ({user, getPlaceInfo:failingGetPlaceInfo, getTravelDuration:failingGetTravelDuration}); // eslint-disable-line no-unused-vars
 
 describe('conversation with Heston', () => {
 	it('ignores conversations unless they start as expected', () => {
