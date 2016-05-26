@@ -14,13 +14,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "array-async-filter": "^2.0.0",
     "array-promise-filter": "^1.0.1",
     "node-fetch": "^1.5.1",
     "node-persist": "0.0.11",
     "pluralize": "^1.2.1",
     "ramda": "^0.21.0",
-    "redux": "^3.5.2",
     "slackbots": "^0.5.1"
   },
   "devDependencies": {
