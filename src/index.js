@@ -5,11 +5,11 @@
 /* global console */
 import SlackBot from 'slackbots';
 import storage from 'node-persist';
-import config from './config';
+import config from '../config';
 import process from 'process';
-import hestonBot from './src/hestonBot';
-import {getPlaceInfo, getTravelDuration} from './src/utils';
-import log, {setLogger} from './src/log';
+import hestonBot from './hestonBot';
+import {getPlaceInfo, getTravelDuration} from './utils';
+import log, {setLogger} from './log';
 
 setLogger(console.info); // eslint-disable-line no-console
 
